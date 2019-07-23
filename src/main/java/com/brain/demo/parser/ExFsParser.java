@@ -5,7 +5,12 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,8 +18,9 @@ public class ExFsParser {
 
     public void run(){
         System.out.println("Executing run method");
-        parse();
-        save();
+        new File("parsed").mkdir();
+        List<String> urls= parse();
+        save(urls);
 
     }
 
@@ -42,6 +48,19 @@ public class ExFsParser {
     }
 
     private void save (List<String> urls){
-
+        for (int i = 0; i < urls.size(); i++) {
+            String imgUrl = urls.get(i);
+            try {
+                URL url = new URL(imgUrl);
+                BufferedImage image = ImageIO.read(url);
+                String imgType = imgUrl.substring(imgUrl.lastIndexOf('.') + 1);
+                ImageIO.write(image, imgType, new File("parsed/img_" +i+ '.' + imgType));
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        
     }
 }
